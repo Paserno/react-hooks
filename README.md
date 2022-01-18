@@ -138,3 +138,96 @@ export const CounterWithCustomHook = () => {
 }
 ````
 #
+### 3.- useEffect - SimpleForm
+Ahora se demostrará el uso de __useEffect__ con un simple form:
+Se crea el archivo
+* `02-useEffect/SimpleForm.js`
+En `index.js`
+* Hacemos uso de la importación del nuevo elemento que se creo.
+````
+import { SimpleForm } from './components/02-useEffect/SimpleForm';
+
+
+ReactDOM.render(
+  
+    <SimpleForm />,
+````
+En `components/02-useEffect/SimpleForm`
+* Importamos el useEffect y useState propios de __react__, ademas de crear la nueva función `SimpleForm()`.
+````
+import React, { useEffect, useState } from 'react'
+import './effects.css'
+
+export const SimpleForm = () => {...}
+````
+* Creamos el __useState__ y le damos algunas propiedades como el nombre y el mail.
+* Le hacemos la desestructuración en el `formState`.
+````
+const [formState, setFormState] = useState({
+        name: '',
+        email: ''
+    });
+
+const { name, email } = formState;
+````
+* Creamos 3 useEffect para ver el funcionamiento, le ponemos algunas impresiones por consola que se ejecutarán la primera vez.
+* El primero se ejecutará 1 sola vez.
+* El segundo se ejecutará cada vez que se escribá en cualquiera de los dos input que se crearán.
+* El tercero se ejecutará cada vez que se escriba en el input del email.
+````
+ useEffect( () => {
+        console.log('hey!')
+    }, [] );
+
+    useEffect( () => {
+        console.log('formState cambió!')
+    }, [formState] );
+
+    useEffect( () => {
+        console.log('email cambió!')
+    }, [email] );
+````
+* Esta función detectará cada cambio del formulario y lo mandará al `state` segun el nombre del input. _(existe los imput name y email)_
+````
+const handleInputChange = ({ target }) => {
+        setFormState({
+            ...formState,
+            [ target.name ]: target.value
+        });
+    }
+````
+* Aqui esta el formulario en html que se renderizará, primero tiene un titulo y luego 2 input con sus propiedades.
+* Cada input tiene la función `onChange` que detectará los cambios y su value.
+````
+    return (
+        <>
+           <h1>useEffect</h1>
+           <hr/>
+
+           <div className='form-group'>
+               <input
+                    type="text"
+                    name="name"
+                    className="form-control"
+                    placeholder="Tu Nombre"
+                    autoComplete="off"
+                    value={ name }
+                    onChange={ handleInputChange }
+               />
+           </div>
+
+           <div className='form-group'>
+               <input
+                    type="text"
+                    name="email"
+                    className="form-control"
+                    placeholder="email@gmail.com"
+                    autoComplete="off"
+                    value={ email }
+                    onChange={ handleInputChange }
+               />
+           </div>
+
+        </>
+````
+#

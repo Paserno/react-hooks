@@ -231,3 +231,57 @@ const handleInputChange = ({ target }) => {
         </>
 ````
 #
+### 4.- UseEffect - Precauciones
+Puede existir algunos problemas con el uso de __useEffect__ es necesario el uso de un callback para eliminar un efecto en este ejemplo se verá: 
+
+Se crea los siguientes elementos
+* `components/02-useEffect/Message.js`
+
+En `components/02-useEffect/Message.js`
+* Importamos el `useEffect` y `useState` de react.
+````
+import React, { useEffect, useState } from 'react'
+````
+* Creamos la función y establecimos un __useState__ con las cordenadas.
+* Y luego le pasamos las propiedades del __state__ a los objetos `x` e `y`.
+````
+export const Message = () => {
+
+    const [coords, setCoords] = useState({x: 0, y: 0})
+    const { x, y } = coords;
+    ...
+}
+````
+* Aqui tenemos el uso del __useEffect__, el cual tenemos una función que toma el evento del mouse, el cual al recibirlo lo almacena en la constante y se lo pasamos al __setCoords__ para modificar su estado.
+* Tenemos la creación del evento `mousemove` el cual con la función `mouseMove()` recien mencionada hara el registro de `x` e `y`.
+* Despues tenemos el retonrno al __callback__, en el caso de no tenerlo nunca se cerraria el registro del evento y cada vez que es usada la función `Message` se estará acumulando y terminará usando mucha memoria, por esto es necesario hacerle un `removeEventListener`, para que no pase esto y solo se use una vez y que se elimine el evento.
+````
+useEffect(() => {
+        const mouseMove = (e) => {
+            const coord = { x: e.x, y: e.y };
+            setCoords( coord );
+        }
+        window.addEventListener('mousemove', mouseMove);
+
+        return () => {
+            window.removeEventListener('mousemove', mouseMove );
+        }
+    }, [])
+````
+* Finalmente tenemos el retorno de la función `Message` que es el dibujado de un `<h3>` con un parrafo que le pasamos los valores del __state__.
+````
+return (
+        <div>
+            <h3>Eres Genial</h3>
+            <p>
+                x: { x } y: { y }
+            </p>
+        </div>
+    )
+````
+En `components/02-useEffect/SimpleForm.js`
+* Al final del formulario de `SimpleForm` colocamos una condicion, en el caso que `name` _(el primer input)_ tenga los valores `123` se invocará la función `Message` _(no olvidar hacer la importación del componente)_
+````
+{ (name === '123') && <Message /> }
+````
+#

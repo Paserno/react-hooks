@@ -285,3 +285,139 @@ En `components/02-useEffect/SimpleForm.js`
 { (name === '123') && <Message /> }
 ````
 #
+### 5.- Formulario con Custom Hooks - useForm
+Creamos un Custom Hooks para capturar los eventos que se produzcan en el formulario:
+
+Creamos los siguientes archivos
+* FormWithCustomHook en `components/02.useEffect/FormWithCustomHook.js`
+* Creamos un nuevo Custom Hook en `hooks/useForm.js`
+
+En `index.js`
+* Importamos `FormWithCustomHook` que es el elemento que creamos, que se renderizará.
+````
+import { FormWithCustomHook } from './components/02-useEffect/FormWithCustomHook';
+
+ReactDOM.render(
+  
+    <FormWithCustomHook />,
+````
+En `hooks/useForm.js`
+* Realizamos la importación de state.
+````
+import { useState } from 'react';
+````
+* Creamos la función exportandola, la que recibirá como paramentro `inicialState` como un objeto vacío.
+* Invocamos el __useState__ pasandole el parametro de la función.
+* En la función `handleInputChange` le entregamos como parametro el `target`, aqui utilizaremos el `setValues`, para recibir los valores que se almacenarán en el `useState`.
+* Finalmente retornamos un arreglo, con el `values` que corresponde al useState y la función `handleInputChange` que realizará los cambios al __useState__.
+````
+export const useForm = ( inicialState = {} ) => {
+
+    const [values, setValues] = useState(inicialState);
+
+    const handleInputChange = ({ target }) => {
+
+        setValues({
+            ...values,
+            [ target.name ]: target.value
+        });
+    }
+
+    return [ values, handleInputChange ];
+};
+````
+
+En `components/02.useEffect/FormWithCustomHook.js`
+* Importamos los elementos que utilizaremos, como el useEffect, el Custom Hook y un elemento de css.
+````
+import React, { useEffect } from 'react'
+import { useForm } from '../../hooks/useForm';
+import './effects.css'
+````
+* Creamos la función `FormWithCustomHook`.
+````
+export const FormWithCustomHook = () => {...}
+````
+* Utilizamos el Custom Hook y le pasamos por parametro algunos objetos.
+* Y desestructuramos el __useState__ con los objetos que le habiamos pasado. 
+````
+const [formValues, handleInputChange] = useForm({
+        name: '',
+        email: '',
+        password: ''
+    });
+
+    const { name, email, password } = formValues;
+````
+* Creamos un efecto que escuche los cambios del email. 
+````
+useEffect( () => {
+        console.log('emial cambió');
+        
+    }, [ email ])
+````
+* Creamos un evento que cuando se presion un boton en el formulario se envíe por consola los valores del __useState__.
+````
+const handleSubmit = (e) => {
+        e.preventDefault();
+
+        console.log( formValues );   
+    }
+````
+* Finalmente tenemos el retorno del formulario __HTML__, que cuenta con 3 input _(textbox)_ y un boton.
+* Le pasamos los valores que corresponde a la desestructuración del __useState__ del __Custom Hook__ y le pasamos la función de la misma.
+````
+return (
+        <form onSubmit={ handleSubmit }>
+           <h1>FormWithCustomHook</h1>
+           <hr/>
+
+           <div className='form-group'>
+               <input
+                    type="text"
+                    name="name"
+                    className="form-control"
+                    placeholder="Tu Nombre"
+                    autoComplete="off"
+                    value={ name }
+                    onChange={ handleInputChange }
+               />
+               
+           </div>
+    <br/>
+
+           <div className='form-group'>
+               <input
+                    type="text"
+                    name="email"
+                    className="form-control"
+                    placeholder="email@gmail.com"
+                    autoComplete="off"
+                    value={ email }
+                    onChange={ handleInputChange }
+               />
+               
+           </div>
+           <br/>
+           <div className='form-group'>
+               <input
+                    type="password"
+                    name="password"
+                    className="form-control"
+                    placeholder="********"
+                    value={ password }
+                    onChange={ handleInputChange }
+               />
+               
+           </div>
+           <br/>
+
+            <button type="submit" className='btn btn-primary'>
+                Guardar
+
+            </button>
+
+        </form>
+    )
+````
+#

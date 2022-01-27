@@ -644,3 +644,88 @@ return (
     )
 ````
 #
+### 9.- Caso de uso Real - useRef
+Lo utilizamos esta vez el __useRef__ en un uso mas cotidiano, ya que en el anterior punto se utilizaba de una forma menos comun, al menos por la comunidad ya que se puede hacer lo mismo de una manera mas simple sin estar referenciando el __Hook__, esta vez lo utilizaremos en el caso de no tener respuesta de nuestro __CustomHook__ `useFetch`:
+
+Para esto se modificará lo siguiente
+* index de la aplicación, haciendo referencia al nuevo componente
+* Utilizar el componente `MultipleCustomHooks` en la nueva referencia.
+* Adaptar el __useFetch__ con el uso de __useRef__.
+
+En `index.js`
+* Hacemos la importación de `RealExampleRef` el nuevo componente que se renderizará.
+````
+import { RealExampleRef } from './components/04-useRef/RealExampleRef';
+
+ReactDOM.render(
+  
+    <RealExampleRef />,
+````
+En `components/04-useRef/RealExampleRef.js`
+* Realizamos la importación de __React__, __useState__, el componente que utilizaremos y css.
+* Creamos la función `RealExampleRef`.
+````
+import React, { useState } from 'react';
+import { MultipleCustomHooks } from '../03-examples/MultipleCustomHooks';
+
+import '../02-useEffect/effects.css';
+
+export const RealExampleRef = () => {...}
+````
+* Utilizamos el __useState__, esto para mostrar los elementos html en pantalla.
+* Retornamos un `<h1>`, creamos una condición con el componente `<MultipleCustomHooks />` y mostramos un botón.
+* En el botón cada vez que se presione se cambiará el estado del __useState__.
+````
+const [show, setShow] = useState(false);
+
+    return (
+        <div>
+            <h1> Real Example Ref </h1>
+            <hr />
+            { show && <MultipleCustomHooks /> }
+
+            <button
+                className='btn btn-primary mt-3'
+                onClick={ () => {
+                    setShow( !show );
+                } }
+            >
+                { 
+                show ? 'Hide' : 'Show' 
+                 }
+            </button>
+        </div>
+    )
+````
+En `hooks/useFetch`
+* Importamos el __useRef__ en el CustomHook.
+````
+import { useState, useEffect, useRef } from 'react';
+````
+* Le agregamos al inicio el __useRef__ y le asignamos una propiedad booleana en true.
+````
+const isMounted = useRef(true);
+````
+* Creamos un nuevo __useEffect__ con el retorno de un __callback__ que termine el evento, en este caso es para cambiar el valor booleano del __useRef__ `isMounted.current = false`.
+* Le damos un arreglo vacío, para que cada vez qu se llame al __CustomHook__ se ejecute y se cierre cuando se deje de utilizar.
+````
+ useEffect(() => {
+        return () => {
+            isMounted.current = false;
+        }
+    }, []);
+````
+* Encerramos nuestra segunda promesa del __fetch__ en una condición, en el caso que `isMounted.current` sea __true__ se modificará el __useState__ con los datos que traiga el url, en el caso que sea __false__ no hará nada, pero en este caso le ponemos una impresión por consola para mostrar cuando se cumple la condición.
+````
+if (isMounted.current) {
+        setState({
+            loading: false,
+        });
+            error: null,
+            data
+} else {
+        console.log('setState no se llamó');
+    }
+````
+De esta manera evitamos que cuando apretamos muchas veces el botón de mostrar y ocultar, no salga el error por consola, evitando fugas de memoria con el uso del __useState__ o no llamar el componente si no esta montado en este caso, así se da una protección mayor a nuestra aplicación usando el __useRef__.
+#

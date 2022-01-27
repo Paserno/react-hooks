@@ -596,3 +596,51 @@ return (
     )
 ````
 #
+### 8.- Uso basico de useRef
+El primer ejemplo del uso de __useRef__, será un auto focus en un input:
+
+Se crea el elemento 
+* FocusScreen en `04-useRef/FocusScreen.js`
+
+En `components/04-useRef/FocusScreen.js`
+* Se realiza la importación de __React__ y __useRef__.
+* Se crea la función `FocusScreen`.
+````
+import React, { useRef } from 'react';
+
+export const FocusScreen = () => {...}
+````    
+* Utilizamos el __useRef__, esto lo utilizaremos para dar referencia a un input.
+* Creamos la función `handleClick()` y utilizamos el `inputRef.current.` para hacer referencia al elemento y `.select()` para hacer el auto focus y seleccionar el contenido del input. _(esto será equivalente a `document.querySelector()`)_
+````
+const inputRef = useRef();
+
+const handleClick = () => {
+    // document.querySelector('input').select();
+    inputRef.current.select();
+    console.log(inputRef);
+}
+````
+* Finalmente renderizamos un `<h1>` con un input dando la referenica al __Hook__ `ref={ inputRef }` y un botón que hará el llamado de la función `handleClcik()` que hará el auto focus.
+````
+return (
+        <div>
+            <h1>Focus Screen</h1>
+            <hr />
+
+            <input 
+                ref={ inputRef }
+                className='form-control'
+                placeholder='Su Nombre'
+            />
+
+            <button 
+                className='btn btn-outline-primary mt-3'
+                onClick={ handleClick }
+            >
+                Focus
+            </button>
+        </div>
+    )
+````
+#

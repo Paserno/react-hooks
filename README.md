@@ -421,3 +421,76 @@ return (
     )
 ````
 #
+### 6.- CustomHook - useFetch 
+Se realizará un __Custom Hook__ del uso de `fetch` para utilizar una API externa:
+
+Se creara lo siguiente
+* `MultipleCustomHooks` en `components/03-examples/MultipleCustomHooks.js` se utilizará el elemento para renderizar los elementos que se mostraran en pantalla.
+* `useFetch` en `hooks/useFetch.js` se creará el __Custom Hoook__ para enviar los elementos de la API.
+
+En `index.js`
+* Importamos el elemento que utilizaremos para la renderización.
+````
+import { MultipleCustomHooks } from './components/03-examples/MultipleCustomHooks';
+
+ReactDOM.render(
+  
+    <MultipleCustomHooks />,
+````
+
+En `hooks/useFetch.js` 
+* Importamos los elementos que utilizarán como el 
+````
+import { useState ,useEffect } from 'react';
+````
+* Creamos la función `useFetch` que recibirá como parametro el `url`.
+* Invocamos el __useState__ y los estados iniciales que tendrá sera la `data` en null ya que no se tiene datos, `loading` en true ya que cuando se llame la función se tendra la carga y `error` en null, para manejar los errores.
+* Encerramos nuesto metodo `fetch` en un __useEffect__ que se ejecutará cuando la url cambie.
+* El fetch lo que hace es recibir el url, y en la promesa trae la respuesta con `.json()`, luego en la segunda promesa teniendo la data llama al __setState__ y cambia el `loading` en false, el `error` en null _(faltaria poner una validación de si viene error o no)_ y finalmente la data.
+* Al final de __Custom Hook__ se retornará el `state` del useState.
+````
+export const useFetch = ( url ) => {
+    const [state, setState] = useState({ data:null, loading:true, error:null })
+
+    useEffect(() => {
+        fetch( url )
+            .then( resp => resp.json() )
+            .then( data => {
+
+                setState({
+                    loading: false,
+                    error: null,
+                    data
+                })
+            });
+    }, [url]);
+    return state;
+};
+````
+
+En `components/03-examples/MultipleCustomHooks.js`
+* Imporamos algunos elementos como React, el __Custom Hook__ llamado useFetch y un elemento css.
+````
+import React from 'react';
+import { useFetch } from '../../hooks/useFetch';
+
+import '../02-useEffect/effects.css'
+````
+* Creamos la función.
+* Le mandamos al __Custom Hook__ `useFetch` el url de la API.
+* Retornamos el `state` con los elementos son retornados en el __useFecth__.
+* Finalmente retornamos un `<h1>`.
+````
+export const MultipleCustomHooks = () => {
+
+    const state = useFetch( `https://www.breakingbadapi.com/api/quotes/1` );
+    console.log(state);
+
+    return (
+        <div>
+            <h1>Custom Hooks!!</h1>
+        </div>
+    )
+};
+````
+#

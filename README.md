@@ -494,3 +494,105 @@ export const MultipleCustomHooks = () => {
 };
 ````
 #
+### 7.- Uso de CustomHooks useFetch - useCounter
+Lo que se hará es mostrar __Citas__ de __BrakingBad__ por pantalla con el autor, ademas de implementar un botón que incrementará, para mostrar la siguiente __Cita__, en ese punto se utilizará el useCouter, que se hizo en el __Punto 2__:
+
+Pasos a seguir
+* Modificar `components/03-examples/MultipleCustomHooks.js`, adaptarlo para mostrar las citas y un botón, ya que este será el elemento a rednerizar.
+* Modificar el CustomHook `hooks/useCounter.js`.
+* Modificar el CustomHook `hooks/useFetch.js`.
+
+En `hooks/useCounter.js`
+* Los cambios que se realizaron fue, cambiar el nombre de `state` a `couter` en el __useState__.
+* Ademas se quito la propiedad `factor` que se tenia en la función `incement()` y `decrement()`, ademas de cambiarle los valores de las operaciones de `factor` a `1`.
+````
+export const useCounter = ( initialState = 10, ) => {
+    const [counter, setCounter] = useState(initialState)
+
+    const increment = () => {
+        setCounter( counter + 1);
+    }
+    const decrement = () => {
+        setCounter( counter - 1);
+    }
+    const reset = () => {
+        setCounter( initialState);
+    }
+    return {
+        counter,
+        increment,
+        decrement,
+        reset
+    };
+}
+````
+En `hooks/useFetch`
+* En el __useEffect__ se le agrego un el `setState` con los valores por defectos antes del metodo `fetch`, esto servirá cuando se utilize el botón para cambiar la __Cita__, para que pueda salir el _"loading..."_.
+````
+useEffect(() => {
+        setState({ data: null, loading: true, error: null});
+      
+        fetch( url )
+            .then( resp => resp.json() )
+            .then( data => {
+
+                setState({
+                    loading: false,
+                    error: null,
+                    data
+                })
+            });
+    }, [url]);
+````
+En `components/03-examples/MultipleCustomHooks.js`
+* Se agrega la importación del __CustomHook__ `useCounter`.
+````
+import React from 'react';
+import { useFetch } from '../../hooks/useFetch';
+import { useCounter } from '../../hooks/useCounter';
+
+import '../02-useEffect/effects.css';
+````
+* Se utiliza el __CustomHook__ pasandole la propiedad de `1` y trayendo el estado del __Hook__ con `counter` y la función `increment()` para luego utilizarlos.
+* En el __CustomHook__ del `useFetch` se le pasa el url con el estado del __Hook__ que seria el `counter`, adicionalmente se desestructura el `loading` y la `data`.
+* Finalmente realizamos una condición de la `data` en el caso que sea __true__ traerá los datos del arreglo en la posición `[0]`, desestructurando el `author` y `quote`, en el caso que sea __null__ el contenido de la `data` no se cumplirá la condición y no pasará nada. _(Se cumple la lógica booleana, en el caso que `data` tenga datos sera __true__)_
+````
+const { counter, increment } = useCounter(1);
+
+const { loading, data } = useFetch(`https://www.breakingbadapi.com/api/quotes/${ counter }`);
+    
+const { author, quote } = !!data && data[0];
+````
+* El return de la función que se renderizará, comienza con un `<h1>` y una operación ternaria si `loading` es `true` se mostrará un `Loading...`, en el caso que sea `false` se motrará la __Cita__ con el __autor__.
+* Finalmente un botón que si se le hace clic, se utilizará la función `increment()` del __useCounter__, de esta manera mostrando otra __Cita__.
+````
+return (
+        <div>
+            <h1>Breaking Bad Quotes</h1>
+            <hr />
+        {
+            loading
+                ?
+                    (
+                        <div className='alert alert-info text-center'>
+                            Loading...
+                        </div>
+                    )
+                :
+                    (
+                        <blockquote className='blockquote text-end'>
+                        <p className='mb-0'> { quote } </p>
+                        <p/>
+                        <footer className='blockquote-footer'>{ author }</footer>
+                        </blockquote>
+                    )
+        }
+            <button 
+                className='btn btn-primary'
+                onClick={ increment }>
+                Siguiente Quote
+            </button>
+        </div>
+    )
+````
+#

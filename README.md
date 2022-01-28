@@ -880,7 +880,8 @@ return (
     )
 ````
 #
-ÑEsta vez usaremos el __useMemo__, la diferencia de __React.memo__, radica en que en el primero es un __Hook__  y se puede momorizar una función y su estado, y en el segundo se puede memorizar un componente y que cambiará cuando se cambien sus propiedades:
+### 12.- UseMemo
+Esta vez usaremos el __useMemo__, la diferencia de __React.memo__, radica en que en el primero es un __Hook__  y se puede momorizar una función y su estado, y en el segundo se puede memorizar un componente y que cambiará cuando se cambien sus propiedades:
 
 Pasos a seguir
 * Referenciamos el nuevo componente en el `index.js`.

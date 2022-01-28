@@ -956,3 +956,81 @@ const memoProcesoPesado = useMemo(() => procesoPesado(counter), [ counter ]);
     )
 ````
 #
+### 13.- useCallback
+En este ejemplo se utilizará el __useCallback__ que es muy similar al useMemo ya que almacena en memoria, pero en este caso una fucnión que cambia un estado:
+
+Pasos a seguir:
+* Cambiar la referencia en `index.js`.
+* Crear archivo `CallbackHooks` en `components/06-memos/CallbackHooks.js`.
+* Crear archivo `ShowIncrement` en `components/06-memos/ShowIncrement.js`.
+
+En `index.js`
+* Importamos el componente que se utilizará.
+````
+import { CallbackHook } from './components/06-memos/CallbackHook';
+
+ReactDOM.render(
+  
+    <CallbackHook />,
+````
+En `components/06-memos/CallbackHooks.js`
+* Importar los elementos de React que se utilizará, el componente `ShowIncrement` y css. 
+````
+import React, { useCallback, useState } from 'react';
+import { ShowIncrement } from './ShowIncrement';
+
+import '../02-useEffect/effects.css';
+````
+* Creamos el componente `CallbackHook`, con un estado __useState__ y le asignamos un valor.
+* Creamos el primer __useCallback__ el cual le recibiremos una propiedad llamada `num` y lo que hacemos es un increment que lo guardaremos en el estado y finalmente le pasamos como dependencia el `setCounter`.
+````
+export const CallbackHook = () => {
+
+    const [counter, setCounter] = useState( 10 );
+
+    const increment = useCallback((num) => {
+        setCounter( c => c + num );
+      
+    }, [ setCounter ]);
+    ...
+}
+````
+* Renderizamos el contador con un `<h1>` y invocamos el componente hijo y le pasamos como parametro la funcion del __useCallback__. _(En el caso que fuera un función normal sin el uso de useCallback que cambia el estado se crearia la funcion nuevamente y se renderizaría nuevamente el componente y obviamente que se pase por paramentro, para evitar esto se utiliza el callback )_
+````
+return (
+        <div>
+            <h1>useCallback Hook: { counter }</h1>
+            <hr/>
+
+            <ShowIncrement increment={ increment }/>
+
+        </div>
+    )
+````
+En `components/06-memos/ShowIncrement.js`
+* Importamos React.
+````
+import React from 'react';
+````
+* Creamos el nuevo componente `ShowIncrement` y le agregamos `React.memo` para memorizar el componente y recibimos la propiedad _(función)_ `increment`, agregamos una impresión por consola para ver el ejemplo del uso de __useCallback__.
+* Retornamos un botón que hará uso de la función que se pase por los parametros, asignandole un valor a la función.
+
+````
+export const ShowIncrement = React.memo(({ increment }) => {
+    console.log('Me volví a generar');
+
+    return (
+        <div>
+            <button
+                className='btn btn-primary'
+                onClick={ () => {
+                    increment(5);
+                } }
+            >
+                Increment
+            </button>
+        </div>
+    )
+})
+````
+#

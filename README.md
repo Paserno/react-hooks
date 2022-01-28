@@ -875,9 +875,81 @@ return (
                 }}
             >
                 Show/Hide { JSON.stringify( show )}
-            {/* { 
-                show ? 'Hide' : 'Show' 
-            } */}
+            </button>
+        </div>
+    )
+````
+#
+ÑEsta vez usaremos el __useMemo__, la diferencia de __React.memo__, radica en que en el primero es un __Hook__  y se puede momorizar una función y su estado, y en el segundo se puede memorizar un componente y que cambiará cuando se cambien sus propiedades:
+
+Pasos a seguir
+* Referenciamos el nuevo componente en el `index.js`.
+* Creamos el componente __MemoHook__, en `components/06-memos/MemoHook` y copiamos del componente Memorize en `components/06-memos/Memorize.js` para luego adaptarlo.
+* Creamos la función `procesoPesado` en `helpers/procesoPesado.js`.
+
+En `index.js`
+* Importamos el componente y lo renderizamos.
+````
+import { MemoHook } from './components/06-memos/MemoHook';
+
+
+ReactDOM.render(
+  
+    <MemoHook />,
+````
+En `helpers/procesoPesado.js`
+* Creamos una función basica con un __for__, que será el proceso pesado.
+````
+export const procesoPesado = ( iteraciones ) => {
+
+    for (let i = 0; i < iteraciones; i++) {
+        console.log('Ahí vamos ...');
+        
+    }
+    return `${ iteraciones } iteraciones Realizadas.`
+}
+````
+En `components/06-memos/MemoHook`
+* Agegamos la importaciones de useMemo y la función recien creado en `procesoPesado`.
+````
+import React, { useMemo, useState } from 'react';
+import { useCounter } from '../../hooks/useCounter';
+import { procesoPesado } from '../../helpers/procesoPesado';
+
+import '../02-useEffect/effects.css';
+```` 
+* Utilizamos el CustomHook y le asignamos un valor alto, ademas del __useState__ que ya teniamos en el componente `Memorize.js` que es para evaluar el uso de __useMemo__.
+* Uitilizamos el __useMemo__ y le agregamos en el __callback del Hook__ la función que importamos `procesoPesado()`, le pasamos el counter y finalmente le pasamos como dependencia el `[ counter ]` en el caso q cambie se memorizará.
+````
+const { counter, increment } = useCounter( 1000 );
+const [ show, setShow ] = useState(true);
+
+const memoProcesoPesado = useMemo(() => procesoPesado(counter), [ counter ]);
+````
+* En el return del componente tenemos el `<h1>`, `<h3>` con el contador, `<p>` con lo que recibimos en el __useMemo__, ademas de 2 botones uno que incrementa y otro que es para probar el __useMemo__. _(En el caso que no se habría utilizado el useMemo se dispararía con los 2 botones la función, ya que react redibuja los componentes)_
+````
+ return (
+        <div>
+            <h1>Memo Hook</h1>
+            <h3>Counter: <small>{ counter }</small></h3>
+            <hr />
+
+            <p> { memoProcesoPesado } </p>
+
+            <button
+                className='btn btn-primary'
+                onClick={ increment }
+            >
+                +1
+            </button>
+
+            <button
+                className='btn btn-outline-primary ms-2'
+                onClick={ () => {
+                    setShow( !show );
+                }}
+            >
+                Show/Hide { JSON.stringify( show )}
             </button>
         </div>
     )

@@ -729,3 +729,74 @@ if (isMounted.current) {
 ````
 De esta manera evitamos que cuando apretamos muchas veces el botón de mostrar y ocultar, no salga el error por consola, evitando fugas de memoria con el uso del __useState__ o no llamar el componente si no esta montado en este caso, así se da una protección mayor a nuestra aplicación usando el __useRef__.
 #
+### 10.- useLayoutEffect
+Este __Hook__ es similar al __useEffect__, pero con la diferencia que se dispara al final, cuando el __DOM__ ya se haya manipulado _(reconmendado usarlo para leer el diseño del DOM)_:
+
+Pasos a seguir
+* Crear archivo Layout en `components/05-useLayoutEffect/Layout` y copiamos todo el contenido de `componentrs/03-examples/MultipleCustomHooks.js` para luego modificarlo.
+* Modificar el index para que renderice el componente.
+* Crear el archivo css, para agregar algunas propiedades.
+
+En `index.js`
+* Importamos el componente que se utilizará para luego renderizarlo.
+````
+import { Layout } from './components/05-useLayoutEffect/Layout';
+
+ReactDOM.render(
+  
+    <Layout />,
+````
+En `components/05-useLayoutEffect/Layout`
+* Eliminamos el `author` ya que no lo utilizaremos.
+* Agregamos el __useRef__ para hacer referencia a un parrafo `<p>` y agregamos un __useState__ que registrará el tamaño del Box.
+````
+const { quote } = !!data && data[0];
+
+const pTag = useRef();
+const [boxSize, setBoxSize] = useState({});
+````
+* Invocamos el `useLayoutEffect` lo que hará es detectar los camibos de las citas `quote` y cuando pase eso registrará el tamaño en el __useState__ con ayuda de la refencia del __useRef__ y con la propiedad de JavaSrcipt `.getBoundingClientRect()`.
+````
+useLayoutEffect(() => {
+    setBoxSize( pTag.current.getBoundingClientRect() );
+
+    }, [quote]);
+````
+* Se retornará en el componente un `<h1>`, un `<blockquote>` con la __Cita__, un `<pre>` que mostrará los cambios del Box y finalmente un botón que hará el cambio de las citas.
+````
+ return (
+        <div>
+            <h1>LayoutEffect</h1>
+            <hr />
+
+            <blockquote className='blockquote text-end'>
+                <p 
+                    className='mb-0'
+                    ref={ pTag }
+                > {quote} </p>
+                <p />
+            </blockquote>
+
+            <pre>
+                { JSON.stringify( boxSize, null, 3) }
+            </pre>
+
+            <button
+                className='btn btn-primary'
+                onClick={increment}>
+                Siguiente Quote
+            </button>
+        </div>
+    )
+````
+En `components/05-useLayoutEffect/layout.css`
+* Con el `display: flex` se podrá ver los camibos del tamaño del Box de las __Citas__.
+````
+body{
+    padding: 70px;
+}
+.blockquote{
+    display: flex;
+}
+````
+#

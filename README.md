@@ -1,5 +1,27 @@
+> __Elemento Anterior 👀:__ __[Gif App ⚛️](https://github.com/Paserno/react-gif-app)__
 # Hook App
+Uso de diferentes Hooks:
+* useState
+* CustomHooks - useCounter
+* useEffect
+* CustomHook - useForm
+* CustomHook - useFetch
+* useRef
+* useLayoutEffect
+* Memo
+* useMemo
+* useCallback
 
+#
+Recordar que si se desea ejecutar esta aplicación, deben de reconstruir los módulos de node así:
+````
+npm install
+````
+Y luego para hacerla correr.
+````
+npm start
+````
+<br>
 
 #
 ### 1.- UseState - Multiples Estados

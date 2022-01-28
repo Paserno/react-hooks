@@ -800,3 +800,86 @@ body{
 }
 ````
 #
+### 11.- Memo
+Este es un metodo de React, lo que hará es memorizar el componente, de esta manera no redibujará el componente siempre, solo cuando la propiedad del componente cambie:
+
+Se hará lo siguiente
+* Referenciar el nuevo componente en el `index.js`.
+* Crear el componente Memorize en `components/06-memos/Memorize.js`.
+* Crear el componente Small en `components/06-memos/Small.js`.
+
+En `index.js`
+* Importamos el nuevo componente para ser renderizado.
+````
+import { Memorize } from './components/06-memos/Memorize';
+
+ReactDOM.render(
+  
+    <Memorize />,
+````
+En `components/06-memos/Small.js`
+* Se importa React.
+````
+import React from 'react';
+````
+* Se crea la función, encerrandola en el metodo de __React memo__ y recibimos un valor en la propiedad. _(En el caso de no usar el metodo memo, se redibujaria siempre el componente si es llamado, en este caso solo cuando la propiedad cambie se disparará)_
+* Utilizamos una impresión por consola para mostrar cuando se dispara y el componente que retornará un `<small>`.
+````
+export const Small = React.memo(({ value }) => {
+
+    console.log('volví a llamar Small');
+
+    return (
+        <small> {value} </small>
+  )
+})
+````
+En `components/06-memos/Memorize.js`
+* Imporamos el __useState__, __CustomHook__ y el componente __Small__.
+````
+import React, { useState } from 'react';
+import { useCounter } from '../../hooks/useCounter';
+import { Small } from './Small';
+
+import '../02-useEffect/effects.css';
+````
+* Creamos el componente `Memorize`.
+* Utilizamos el __CustomHook__ `useCounter` y le asignamos un valor, ademas de traer el estado del hook `counter` y su función `increment`.
+* Utilizamos el __useState__ que le asignamos un valor true. 
+````
+export const Memorize = () => {
+
+    const { counter, increment } = useCounter( 10 );
+    const [ show, setShow ] = useState(true);
+    ...
+}
+````
+* Retornamos en el componente un `<h1>` con el componente __Small__ pasandole el valor de `counter`, un botón de incremento y otro botón que servirá para el ejemplo, para demostrar como actua __React__, en el caso de no usar el metodo __memo__ en el componente __Small__. 
+````
+return (
+        <div>
+            <h1>Counter: <Small value={ counter }/></h1>
+            <hr />
+
+            <button
+                className='btn btn-primary'
+                onClick={ increment }
+            >
+                +1
+            </button>
+
+            <button
+                className='btn btn-outline-primary ms-2'
+                onClick={ () => {
+                    setShow( !show );
+                }}
+            >
+                Show/Hide { JSON.stringify( show )}
+            {/* { 
+                show ? 'Hide' : 'Show' 
+            } */}
+            </button>
+        </div>
+    )
+````
+#

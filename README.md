@@ -1702,7 +1702,7 @@ En esta oportunidad veremos un Hook llamado __useContext__, ademas de un pequeñ
 
 Se utilizo el siguiente elemento.
 
-* __[React Router](https://v5.reactrouter.com/web/guides/quick-start)__
+* __[React Router](https://reactrouter.com/docs/en/v6/getting-started/overview)__
 
 #
 ### 1.- Preparar Rutas 
@@ -1739,5 +1739,57 @@ ReactDOM.render(
 
   document.getElementById('root')
 );
+````
+#
+### 2.- Configuración Router en React
+En este punto se instala __React Router__ para su uso, y se crea un archivo para dejar la configuración:
+
+Pasos a seguir
+* Crear AppRouter.js en `components/09-useContext/AppRouter.js` para la configuración de este.
+* Modificar el MainApp.
+
+En `components/09-useContext/AppRouter.js`
+* Realizar la importación de React y la necesaria para utilizar Router, como `BrowserRouter`, `Routes` _(antes Switch)_ y `Route`.
+* Luego importamos los componentes que se utilizarán.
+````
+import React from 'react';
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route
+  } from 'react-router-dom';
+import { AboutScreen } from './AboutScreen';
+import { HomeScreen } from './HomeScreen';
+import { LoginScreen } from './LoginScreen';
+````
+* Creamos el componente __AppRouter__ y Retornamos los elementos que utilizaremos con ayuda de React Router, para su uso.
+* Definimos los `path` y `element` que se utilizará para mostrar el componente.
+````
+export const AppRouter = () => {
+  return  (
+    <Router>
+      <div>
+        <Routes>
+          <Route path="/" element={ <HomeScreen /> }/>
+          <Route path="/about" element={ <AboutScreen /> }/>
+          <Route path="/login" element={ <LoginScreen /> }/>
+            
+        </Routes>
+      </div>
+    </Router>
+  );
+};
+````
+En `components/09-useContext/MainApp.js`
+* Importamos el componente __AppRouter__ y lo retornamos para su uso. 
+````
+import React from 'react';
+import { AppRouter } from './AppRouter';
+
+export const MainApp = () => {
+  return (
+        <AppRouter />
+)
+};
 ````
 #

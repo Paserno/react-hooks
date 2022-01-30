@@ -1693,3 +1693,51 @@ return (
 ````
 De esta manera el código se encuentra mas modularizado y limpio, para una facil lectura y funcionando de la misma forma.
 #
+
+# Hook - useContext
+En esta oportunidad veremos un Hook llamado __useContext__, ademas de un pequeño uso de __React Router__.
+
+* En el ejemplo anterior del __useReducer__ contabamos con 3 componentes, el componente padre __TodoApp__ contiene un componente hijo que era el __TodoList__ y así mismo en su interior estaba el __TodoListItem__, el que el padre tenia dos funciones llamadas `handleDelete` y `handleToggle`, el cual el contenedor hijo __TodoList__ no usaba, pero si el contenedor "nieto" __TodoListItem__, para que sea usado tenia que pasar por __TodoList__ para llegar al contenedor "menor".
+* En esta situación se usará __Context__, para un caso diferente, de dos componentes que no tengan relación de herencia, pero que se necesite pasar información de un lugar a otro, aquí tendremos el uso de este elemento. 
+
+Se utilizo el siguiente elemento.
+
+* __[React Router](https://v5.reactrouter.com/web/guides/quick-start)__
+
+#
+### 1.- Preparar Rutas 
+Creamos la base de cada componente que utilizaremos en este ejercicio:
+
+Pasos a seguir
+* Crear __MainApp__ en `components/09-useContext/MainApp.js`.
+* Crear __HomeScreen__ en `components/09-useContext/HomeScreen.js`.
+* Crear __LoginScreen__ en `components/09-useContext/LoginScreen.js`.
+* Crear __AboutScreen__ en `components/09-useContext/AboutScreen.js`.
+
+En `components/09-useContext/MainApp.js`
+* Utilizamos el snippet `rafc` para crear el componente y agregamos algunos elementos como un `<h1>`, así mismo para los otros 3 nuevos componentes que se creearon.
+````
+import React from 'react';
+
+export const MainApp = () => {
+  return (
+    <div>
+        <h1>MainApp</h1>
+        <hr/>
+    </div>
+)
+};
+````
+En `index.js`
+* Importamos __MainApp__ y lo renderizamos.
+````
+import { MainApp } from './components/09-useContext/MainApp';
+
+ReactDOM.render(
+  
+    <MainApp />,
+
+  document.getElementById('root')
+);
+````
+#

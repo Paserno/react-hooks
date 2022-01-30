@@ -1343,3 +1343,91 @@ const handleSubmit = (e) => {
 </form>
 ````
 #
+### 5.- Guardar TODOs en LocalStorage
+En este punto ya tenemos la caja de texto para utilizar, pero esta vez haremos uso del __CustomHook__ `useForm` para recibir el contenido del input para luego guardarlo en el `localStorage`:
+
+Pasos a seguir
+* Modificar el CustomHook en `hooks/useForm.js`
+* Adaptar el uso del localStorage en __TodoApp__.
+
+En `hooks/useForm.js`
+* En el __Hook__ le agregamos una función adicional, para que limpie el input cuando se haya utilizado.
+* No olvidar retornar la nueva función del __CustomHook__.
+````
+const reset = () => {
+        setValues( inicialState );
+    }
+````
+En `components/08-useReducer/TodoApp.js`
+* En las importaciones agregamos el __useEffect__ y el CustomHook __useForm__.
+````
+import React, { useEffect, useReducer } from 'react';
+import { todoReducer } from './todoReducer';
+import { useForm } from '../../hooks/useForm';
+
+import './styles.css';
+````
+* Eliminamos el __initialState__ para dejar el __init__ que seria el estado inicial del __useReducer__, en este caso todo lo que esta con comentario _(//)_ era el estado inicial.
+* Pero ya que usaremos el __localStorage__, tenemos que sacar el contenido de ahí y para eso es necesario convertirlo a un objeto el contenido que esta en el localStorage usando `JSON.parse`, obteniendolo con el `.getItem()` en el caso que no se tenga nada en el __localStorage__ se mandará un arreglo vacío.
+````
+const init = () => {
+
+  return JSON.parse(localStorage.getItem('todos')) || [];
+  // return [{
+  //   id: new Date().getTime(),
+  //   desc: 'Aprender React',
+  //   done: false
+  // }];
+}
+````
+* Ahora dentro del componente __TodoApp__, modificamos el __useReducer__, agregandole el __dispatch__, que seria el disparador de la acción, ademas de el __initialState__ ahora es un arreglo vacío y le agregamos finalmente un tercer argumento que será la función __init__.
+* Utilizamos el CustomHook __useForm__, recibiendo todas sus funciónes y el estado `{description}`, ademas mandando el initialState del __useForm__ como `description` vacío.
+* Luego tenemos el __useEffect__ que cada vez que se reciba un cambio en el `todos` lo registrará en el __localStorage__ con `.setItem()`.
+````
+const [todos, dispatch] = useReducer(todoReducer, [], init);
+
+  const [ { description }, handleInputChange, reset ] = useForm({
+    description: ''
+  });
+
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify( todos ))
+  }, [todos]);
+````
+* En el evento `handleSubmit` le agregamos una condición, en el caso que se mande un caracter menor o igual a 1 se retornará.
+* En el __newTodo__ le enviamos el contenido que tendra `description`. _(value del input)_
+* Agregamos el __dispatch__ con la acción y finalmente utilizamos la función del CustomHook que es limpiar el input.
+````
+const handleSubmit = (e) => {
+    e.preventDefault();
+    if ( description.trim().length <= 1){
+      return;
+    }
+
+    const newTodo = {
+      id: new Date().getTime(),
+      desc: description,
+      done: false
+    };
+
+    const action = {
+      type: 'add',
+      payload: newTodo
+    }
+    dispatch( action );
+    reset();
+  }
+````
+* En el input le agregamos el __value__ con `description` y __onChange__ con el evento del CustomHook `handleInputChange`.
+````
+ <input 
+    type='text'
+    name='description'
+    className='form-control'
+    placeholder='Aprender ...'
+    autoComplete='off'
+    value={ description }
+    onChange={ handleInputChange }
+/>
+````
+#

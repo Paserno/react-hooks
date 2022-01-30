@@ -1208,3 +1208,87 @@ export const TodoApp = () => {
 };
 ````
 #
+### 3.- Crear cascaron en Todo list
+Agregamos contenido HTML en nuestro componente con clases de boostrap para darle forma a lo que se mostrará en el Todo list:
+
+Pasos a seguir
+* Agregar contenido al return del componente __TodoApp__ en `components/08-useReducer/TodoApp.js`
+* Agregar CSS en  `components/08-useReducer/styles.css`
+
+En `components/08-useReducer/styles.css`
+* Le agregamos un padding al body.
+* En el parrafo del componente le cambiamos el cursor y le eliminamos el margin.
+* En la clase `list-group-item` le agregamos algunas propiedades de flexbox para mostrar la lista de los TODOs.
+* Agregamos una clase para las tareas ya terminadas.
+````
+body{
+    padding: 50px;
+}
+p{
+    cursor: pointer;
+    margin: 0px;
+}
+.list-group-item{
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+.complete{
+    text-decoration: line-through;
+}
+````
+En `components/08-useReducer/TodoApp.js`
+* En el return del componente agregamos un numero total de Todos.
+````
+      <h1>Todo App ( {todos.length} )</h1>
+      <hr />
+````
+* Encerramos los 2 div principales en un div con la clase `row` de boostrap, el div con la clase `col-7` tendra el listado y el `col-5` tendra el formulario para agregar mas.
+* En la lista desordenada, se tendran los diferentes TODOs, para esto se creo un `.map()`, que tendra los resultados con la `desc` y un botón.
+````
+<div className='col-7'>
+    <ul className='list-group list-group-flush'>
+    {
+        todos.map((todo, i) => (
+        <li
+            key={todo.id}
+            className='list-group-item'
+        >
+            <p className='text-center '> {i + 1}. {todo.desc} </p>
+            <button
+            className='btn btn-danger'
+            >
+            Borrar
+            </button>
+        </li>
+        ))
+    }
+    </ul>
+</div>
+````
+*  En este punto tenemos un formulario para agregar nuevos TODOs, con una caja de texto y un botón.
+````
+<div className='col-5'>
+    <h4>Agregar TODO</h4>
+    <hr />
+
+    <form>
+    <input 
+        type='text'
+        name='description'
+        className='form-control'
+        placeholder='Aprender ...'
+        autoComplete='off'
+    />
+
+    <div className="d-grid gap-2">
+    <button
+        className='btn btn-outline-primary mt-1 btn-block'
+    >
+        Agregar
+    </button>
+    </div>
+    </form>
+</div>
+````
+#

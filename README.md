@@ -11,6 +11,7 @@ Uso de diferentes Hooks:
 * Memo
 * useMemo
 * useCallback
+* __[Hook - useReducer]()__
 
 #
 Recordar que si se desea ejecutar esta aplicación, deben de reconstruir los módulos de node así:
@@ -1054,5 +1055,82 @@ export const ShowIncrement = React.memo(({ increment }) => {
         </div>
     )
 })
+````
+#
+
+# Hook - useReducer 
+Esta vez se verá un hook en particular el cual es el useReducer, para poder entender el concepto de Reducer y en el futuro conocer Redux
+
+Reducer:
+* Es una función sincrona.
+* La función debe resolverse de manera interna. _(función pura)_
+    * No debe de tener efectos secundarios.
+    * No debe tener tareas asíncronas.
+    * Debe retornar siempre un estado nuevo.
+    * No debe de llamar __localStorage__ o __sessionStorage__ en el reducer _(ya que son efectos secundarios y existe la posibilidad de devuelva un error)_
+    * Para modificar el __state__, no debe requerise mas de un acción.
+* Debe retornar un nuevo estado.
+* Usualmente recibe dos argumentos. _(Un valor inicial y la acción a ejecutar)_
+
+# 
+### 1.- Reducer generla
+Se mostrará la idea general de un __Reducer__
+
+Primeros pasos
+* Cremos el archivo `intro-reducer` en `components/08-useReducer/intro-reducer.js`.
+* Hacemos referencia en el `index.js` para ejecutar.
+
+En `index.js`
+* Comentamos temporalmente todo el codigo que tenemos en el index, para poder ver el ejemplo que se realizará.
+````
+import './components/08-useReducer/intro-reducer';
+````
+En `components/08-useReducer/intro-reducer.js`
+* Le damos un valor inicial con un arreglo que tiene un objeto en su interior.
+````
+const initialState = [{
+    id:1,
+    todo: 'Comprar PC',
+    done: false
+}];
+````
+* Creamos nuestro __Reducer__ que en los atributos le pasamos el estado y la acción.
+* Dentro del __Reducer__ agregamos la acción, que le preguntamos si en `action?.type` es igual a una acción que definimos, retornara el estado, con la ejecución de la acción, en este caso es agregar y lo agregamos en el arreglo el nuevo objeto.
+* En el caso que no entre en la condición solo se retornará el estado.
+````
+const todoReducer = ( state = initialState, action ) => {
+    
+    if ( action?.type === 'agregar'){
+        return [ ...state, action.payload ];
+    }
+    
+    return state;
+}
+````
+* Lo guardamos en una variable, en el caso que pongamos una impresión por consola en este punto del `todos`, solo se mostrará el valor inicial de __state__.
+````
+let todos = todoReducer();
+````
+* Aqui tenemos el segundo objeto que queremos agregar en el __state__, para esto haremos la ejecución de una acción.
+````
+const newTodo = {
+    id: 2,
+    todo: 'Comprar Xbox',
+    done: false
+}
+````
+* La acción es un simple objeto literario, el cual necesita un `type` el cual se evaluará en el __Reducer__, ademas se usa como un estandar el `payload`, el cual tendra el contenido.
+* En este caso la acción es agregar y con el contenido del objeto litarario de `newTodo`, mostrado anteriormente.
+````
+const agregarTodoAction = {
+    type: 'agregar',
+    payload: newTodo
+}
+````
+* Aquí le pasamos el estado anterior y la acción, luego lo imprimimos por consola.
+````
+todos = todoReducer( todos, agregarTodoAction );
+
+console.log(todos);
 ````
 #

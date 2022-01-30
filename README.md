@@ -1431,3 +1431,39 @@ const handleSubmit = (e) => {
 />
 ````
 #
+### 6.- Borrar un TODO
+En este punto creamos en la función del __Reducer__ una opción mas, para luego crear el evento en el componente para que borre el TODO del __useReducer__:
+
+Pasos a seguir
+* Agregar un case al switch de la función `todoReducer`.
+* Agregar el evento al botón borrar y crear la función del evento en el componente __TodoApp__.
+
+En `hooks/todoReducer.js`
+* Agregamos el nuevo `case` de eliminar, usando el `.filter` lo que hará es regresar un nuevo arreglo, en esta caso devolverá todo menos el `action.payload` que seria el elemento a eliminar.
+````
+case 'delete':
+    return state.filter( todo => todo.id !== action.payload );
+````
+En `components/08-useReducer/TodoApp.js`
+* Creamos el evento que hará la eliminación recibiendo en sus parametros el `todoId`.
+* Creamos la acción con su `type` y mandandole la id en el payload.
+* Finalmente disparamos la acción hacia el useReducer, esto lo que hará es recibir un nuevo estado y tambien lo detectará el __useEffect__, lo que hará eliminar el registro en el __localStorage__.
+````
+const handleDelete = ( todoId ) => {
+
+    const action = {
+      type: 'delete',
+      payload: todoId
+    }
+
+    dispatch( action );
+  }
+````
+* En el botón del `.map()` que servirá para la eliminación, agregamos el evento __onClick__, como necesitamos un argumento, le agregamos una función de flecha y agregamos el evento `handleDelete` con su argumento `todo.id`.
+````
+<button
+    className='btn btn-danger'
+    onClick={ () => handleDelete(todo.id) }
+>
+````
+#

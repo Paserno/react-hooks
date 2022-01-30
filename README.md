@@ -1134,3 +1134,77 @@ todos = todoReducer( todos, agregarTodoAction );
 console.log(todos);
 ````
 #
+### 2.- useReducer - Todo List
+Crearemos la app de un To Do, con el uso de __useReducer__:
+
+Pasos a seguir
+* Crear componente __TodoApp__ en `components/08-useReducer/TodoApp.js`.
+* Crear función __todoReducer__ en `components/08-useReducer/todoReducer.js`.
+* Referencia en el `index.js` para renderizar el nuevo componente.
+
+En `index.js`
+* Realizamos la importación y renderizamos el componente.
+````
+import { TodoApp } from './components/08-useReducer/TodoApp';
+
+ReactDOM.render(
+    <TodoApp />,
+
+  document.getElementById('root')
+);
+````
+En `components/08-useReducer/todoReducer.js`
+* Creamos la función del __Reducer__, el cual tiene como atributo el state con un arrelgo vacío y una acción.
+* Agregamos un __switch__ donde estarán las acciones, y agregamos el resultado por default que retornará el estado.
+````
+export const todoReducer = ( state = [], action ) => {
+    switch ( action.type ) {
+        // case 'add':
+            
+        //     break;
+    
+        default:
+            return state;
+    }
+}
+````
+En `components/08-useReducer/TodoApp.js`
+* Importamos __useReducer__, la función del Reducer y estilos CSS.
+````
+import React, { useReducer } from 'react';
+import { todoReducer } from './todoReducer';
+
+import './styles.css'; 
+````
+* Antes de crear el componente inicializamos un estado, con id, descripción y done.
+````
+const initialState = [{
+  id: new Date().getTime(),
+  desc: 'Aprender React',
+  done: false
+}];
+````
+* Creamos la función con un __useReducer__ simple.
+* En nuestro __useReducer__, le enviamos la función __Reducer__ y el estado inicial, para luego imprimir por consola el contenido, este imprime el estado inicial.
+* Finalmente agregamos un return del componente que cuenta con un `<h1>` y una lista desordenada `<ul>`.
+````
+export const TodoApp = () => {
+  const [ todos ] = useReducer(todoReducer, initialState);
+
+  console.log(todos);
+
+  return (
+  <div>
+      <h1>Todo App</h1>
+      <hr/>
+
+    <ul>
+      <li>Hola</li>
+      <li>Mundo</li>
+      <li>Hola de nuevo</li>
+    </ul>
+  </div>
+  )
+};
+````
+#

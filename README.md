@@ -1467,3 +1467,42 @@ const handleDelete = ( todoId ) => {
 >
 ````
 #
+### 7.- Marcar como Completado o Pendiente un TODO
+Esta vez agregaremos una nueva `case` en el __switch__ de la función del __Reducer__, para luego crear el evento en __TodoApp__:
+
+Pasos a seguir
+* Crear `case` en `todoReducer.js`
+* Crear evento que dispare la acción nueva y agregar evento al parrafo del __TodoApp__.
+
+En `hooks/todoReducer.js`
+* Creamos el nuevo `case` en el __switch__, retornamos un `.map` y utilizamos el __operador ternario__ con la condición de que si el id del todo es igual al payload entra en la condición, cambiando el `done`. _(realizando un return implecito)_
+````
+case 'toggle':
+    return state.map( todo => 
+        ( todo.id === action.payload )
+            ? { ...todo, done: !todo.done }
+            : todo
+        )
+````
+En `components/08-useReducer/TodoApp.js`
+* Creamos el nuevo evento `handleToggle` recibiendo como argumento `todoId`, agregando la acción en el __dispatch__.
+````
+const handleToggle = ( todoId ) => {
+    
+    dispatch({
+      type: 'toggle',
+      payload: todoId
+    })
+  }
+````
+* Agregando en el parrafo `<p>` del `.map()` una condición, en el caso que `todo.done` sea __true__ agregar la clase `complete` que subraya el texto.
+* Ademas le agregamos el evento __onClick__, ya que recibiremos un argumento `todo.id`, necesitamos agregar una función de flecha que dispare el evento `handleToggle`.
+````
+<p
+    className={ `${ todo.done && 'complete' }` }
+    onClick={ () => handleToggle( todo.id )}
+>
+{i + 1}. {todo.desc} </p>
+````
+De esta manera logramos realizar el clic en el parrafo y cambia de estado el `done`, en el caso que este en true se subraya. _(simulando que se completo la tarea en el TODO)_
+#

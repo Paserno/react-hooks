@@ -1292,3 +1292,54 @@ En `components/08-useReducer/TodoApp.js`
 </div>
 ````
 #
+### 4.- Agregar un nuevo TODO
+En este punto haremos el evento que haga la accion de agregar un nuevo TODO con ayuda de __useReducer__:
+
+Pasos a seguir
+* Agregar la opción de agregar en la función reducer.
+* Crear el evento en el componente.
+
+En `components/08-useReducer/todoReducer.js`
+* Agregamos la opción en el __switch__ de la función, y retornamos un arreglo, usando el operador spread y el payload.
+````
+case 'add':
+return [ ...state, action.payload];
+````
+En `components/08-useReducer/TodoApp.js`
+* Agregamos el `dispatch` en el __useReducer__.
+````
+const [todos, dispatch] = useReducer(todoReducer, initialState);
+````
+* Agregamos el nuevo evento, usando `.preventDefault()` para no recargar la página.
+* Creamos el nuevo Todo y la acción de agregar.
+* Finalmente agregamos la función __dispatch__ y le mandamos la acción.
+````
+const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newTodo = {
+      id: new Date().getTime(),
+      desc: 'Nueva Tarea',
+      done: false
+    };
+
+    const action = {
+      type: 'add',
+      payload: newTodo
+    }
+    dispatch( action );
+  }
+````
+* Agregamos el evento en el formulario y el `type` en el botón.
+````
+<form onSubmit={ handleSubmit }>
+    ...
+    <button
+        type='submit'
+        className='btn btn-outline-primary mt-1 btn-block'
+    >
+        Agregar
+    </button>
+</form>
+````
+#

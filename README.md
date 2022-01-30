@@ -1506,3 +1506,190 @@ const handleToggle = ( todoId ) => {
 ````
 De esta manera logramos realizar el clic en el parrafo y cambia de estado el `done`, en el caso que este en true se subraya. _(simulando que se completo la tarea en el TODO)_
 #
+### 8.- Optimización del código
+Para que sea facil de leer el componente principal __TodoApp__, se separará en diferentes componentes faciles de leer, de esta manera se tiene el código mas optimizado y limpio:
+
+Pasos a seguir
+* Optimizar __TodoApp__, analizando y extrayendo parte del contenido HTML y sus funciones.
+* Crear Componente __TodoList__ en `components/08-useReducer/TodoList.js` para invocar el listado de los TODOs.
+* Crear Componente __TodoListItem__ en `components/08-useReducer/TodoListItem.js` para invocar cada item de los TODOs.
+* Crear Componente __TodoAdd__ en `components/08-useReducer/TodoAdd.js` para invocar el formulario para agregar un nuevo TODO.
+
+En `components/08-useReducer/TodoListItem.js`
+* Importamos React.
+* Creamos el componente __TodoListItem__ el cual necesitará diferentes propiedades como `todo` que viene del `.map()` del componente __TodoList__, `index`, `handleDelete` corresponde al evento de eliminar y `handleToggle` para subrayar.
+* Finalmente extraemos el contenido interior del `.map()` que estaba en __TodoApp__, para retornarlo en este nuevo componente hijo llamado __TodoListItem__.
+````
+import React from 'react';
+
+export const TodoListItem = ({ todo, index, handleDelete, handleToggle }) => {
+    return (
+        <li
+            key={todo.id}
+            className='list-group-item'
+        >
+            <p
+                className={`${todo.done && 'complete'}`}
+                onClick={() => handleToggle(todo.id)}
+            >
+                {index + 1}. {todo.desc} </p>
+            <button
+                className='btn btn-danger'
+                onClick={() => handleDelete(todo.id)}
+            >
+                Borrar
+            </button>
+        </li>
+    )
+};
+````
+En `components/08-useReducer/TodoList.js`
+* Realizamos la importación de React y el componente __TodoListItem__.
+````
+import React from 'react';
+import { TodoListItem } from './TodoListItem';
+````
+* Creamos el componente __TodoList__, el cual necesita algunos parametros como `todos`, `handleDelete` y `handleToggle`.
+* Extraemos el `<ul>` del componente padre __TodoApp__.
+* En el `.map()` agregamos el componente __TodoListItem__, le pasamos el `key` ya que es solicitado para su identificación, `todo` del `.map()`, `index`, la función `handleDelete` y `handleToggle` que esta en el componente padre __TodoApp__.
+````
+export const TodoList = ({ todos, handleDelete, handleToggle }) => {
+    return (
+        <ul className='list-group list-group-flush'>
+            {
+                todos.map((todo, i) => (
+                    
+                    <TodoListItem 
+                        key={ todo.id }
+                        todo={ todo }
+                        index={ i }
+                        handleDelete={ handleDelete }
+                        handleToggle={ handleToggle }
+                    />
+                ))
+            }
+        </ul>
+    )
+};
+````
+En `components/08-useReducer/TodoAdd.js`
+* Realizamos la importación de React y del CustomHook __useForm__.
+````
+import React from 'react';
+import { useForm } from '../../hooks/useForm';
+````
+* Creamos el componente __TodoAdd__ y necesita un parametro `handleAddTodo` que será la función creada en el componente padre __TodoApp__.
+* Extraemos el __useForm__ del componente padre __TodoApp__.
+````
+export const TodoAdd = ({ handleAddTodo }) => {
+
+    const [{ description }, handleInputChange, reset] = useForm({
+        description: ''
+    });
+    ...
+}
+````
+* Extreames el `handleSubmit` del componente padre __TodoApp__.
+* Le eliminamos la acción y el dispatch, para replazarle por `handleAddTodo()` enviandole el `newTodo`. _(El dispatch se encontrará en el componente padre, en su nueva función `handleAddTodo`)_ 
+````
+const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if ( description.trim().length <= 1){
+            return;
+          }
+
+          const newTodo = {
+            id: new Date().getTime(),
+            desc: description,
+            done: false
+          };
+
+          handleAddTodo( newTodo );
+          reset();
+    }
+````
+* Finalmente extraemos el formulario con el `<h4>` del componente padre __TodoApp__.
+````
+return (
+    <>
+        <h4>Agregar TODO</h4>
+        <hr />
+
+        <form onSubmit={handleSubmit}>
+
+            <input
+                type='text'
+                name='description'
+                className='form-control'
+                placeholder='Aprender ...'
+                autoComplete='off'
+                value={description}
+                onChange={handleInputChange}
+            />
+
+            <div className="d-grid gap-2">
+                <button
+                    type='submit'
+                    className='btn btn-outline-primary mt-1 btn-block'
+                >
+                    Agregar
+                </button>
+            </div>
+        </form>
+    </>
+    )
+````
+En `components/08-useReducer/TodoApp.js`
+* Eliminamos el CustomHook __useForm__ en las importaciones y agregamos dos nuevas importaciones de los 2 componentes nuevos __TodoList__ y __TodoAdd__.
+````
+import React, { useEffect, useReducer } from 'react';
+import { todoReducer } from './todoReducer';
+import { TodoList } from './TodoList';
+import { TodoAdd } from './TodoAdd';
+
+import './styles.css';
+````
+* Agregamos la nueva función `handleAddTodo` que le pasamos por parametro el `newTodo` para activar el __dispatch__ con su acción.
+````
+const handleAddTodo = ( newTodo ) => {
+
+    dispatch({
+      type: 'add',
+      payload: newTodo
+    })
+  }
+````
+* El return ahora es mas limpio, agregamos los dos nuevos componentes con sus propiedades.
+* Componente __TodoList__ necesitando `todos`, las funciones `handleDelete` y `handleToggle`.
+* Componente __TodoAdd__ necesitando la nueva función `handleAddTodo`.
+````
+return (
+    <div>
+      <h1>Todo App ( {todos.length} )</h1>
+      <hr />
+
+      <div className='row'>
+        <div className='col-7'>
+
+          <TodoList 
+            todos={ todos }
+            handleDelete={ handleDelete }
+            handleToggle={ handleToggle }
+          />
+
+        </div>
+
+        <div className='col-5'>
+
+          <TodoAdd
+            handleAddTodo={ handleAddTodo }
+          />
+
+        </div>
+      </div>
+    </div>
+  )
+````
+De esta manera el código se encuentra mas modularizado y limpio, para una facil lectura y funcionando de la misma forma.
+#

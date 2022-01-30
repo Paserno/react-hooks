@@ -11,7 +11,7 @@ Uso de diferentes Hooks:
 * Memo
 * useMemo
 * useCallback
-* __[Hook - useReducer]()__
+* __[Hook - useReducer](https://github.com/Paserno/react-hooks#hook---usereducer)__
 
 #
 Recordar que si se desea ejecutar esta aplicación, deben de reconstruir los módulos de node así:

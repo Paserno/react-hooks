@@ -1810,7 +1810,7 @@ import { Link, NavLink } from 'react-router-dom';
 export const NavBar = () => {...}
 ````
 * Extraemos un __NavBar__ de boostrap con sus clases y lo adaptamos.
-* Remplazando los `<a>` por `<Link>`, para luego darnos cuenta que estan los `<NavLink>` que este elemento identifica en que __url__ estas parado para iluminarse, asi usamos una clase especial `active`.
+* Remplazando los `<a>` por `<Link>`, para luego darnos cuenta que estan los `<NavLink>` que este elemento identifica en que __url__ estas parado para iluminarse.
 ````
 return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
@@ -1819,9 +1819,9 @@ return (
             
             <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div className="navbar-nav">
-                    <NavLink activeClassName="active" to="/" className="nav-link" aria-current="page" >Home</NavLink>
-                    <NavLink activeClassName="active" to="/about" className="nav-link" >About</NavLink>
-                    <NavLink activeClassName="active" to="/login" className="nav-link" >Login</NavLink>
+                    <NavLink to="/" className="nav-link" aria-current="page" >Home</NavLink>
+                    <NavLink to="/about" className="nav-link" >About</NavLink>
+                    <NavLink to="/login" className="nav-link" >Login</NavLink>
                 </div>
             </div>
         </div>
@@ -1847,4 +1847,62 @@ En ``
     <Route path="*" element={ <HomeScreen /> }/>
 </Routes>
 ````
+#
+### 4.- CreateContext - useContext
+Para crear un Context es necesario usar un metodo de React el __CreateContext__, para luego utilizarlo con el useContext:
+
+Pasos a seguir
+* Crear __UserContext__ en `components/09-useContext/UserContext.js`.
+* Importarlo en __MainApp__ para utilizar propiedades que se quieran enviar a otros componentes.
+* Utilizar el __useContext__ en __HomeScreen__ para recibir las propiedades.
+
+En `components/09-useContext/UserContext.js`
+* Importamos `createContext` de react, que servirá para crear un __Context__.
+* No olvidar exportarlo para utilizarlo.
+````
+import { createContext } from 'react';
+
+export const UserContext = createContext();
+````
+En `components/09-useContext/MainApp.js`
+* Imporamos el __UserContext__ para utilizar.
+````
+import React from 'react';
+import { AppRouter } from './AppRouter';
+import { UserContext } from './UserContext';
+````
+* Definimos un objeto que queremos enviar a un componente.
+````
+const user ={
+    id: 123456,
+    name: 'Diego',
+    emial: 'diego@gmial.com'
+  }
+````
+* Agregamos el Context `<UserContext.Provider>` como padre, esto lo que hará es poder proveer información a sus componentes hijos.
+* Le pasamos como `value` el objeto que habiamos definido, esto lo podra recibir cualquier componente hijo.
+````
+return (
+    <UserContext.Provider value={ user }>
+        <AppRouter />
+    </UserContext.Provider>
+
+  )
+````
+En `components/09-useContext/HomeScreen.js`
+* Importamos el __useContext__ de react y __UserContext__, para lograr pasarle las propiedades a este componente.
+````
+import React, { useContext } from 'react';
+import { UserContext } from './UserContext';
+````
+* Utilizamos el __UserContext__ para extraer sus propiedades e imprimirlo por consola con `console.log(userContext)`.
+````
+export const HomeScreen = () => {
+    const userContext = useContext(UserContext);
+
+    console.log(userContext);
+    ...
+}
+````
+De esta forma podemos recibir las propiedades de un __Context__.
 #

@@ -17,6 +17,7 @@ export const AppRouter = () => {
 
         <NavBar />
 
+        <div className='container'>
         <Routes>
           <Route path="/" element={ <HomeScreen /> }/>
           <Route path="/about" element={ <AboutScreen /> }/>
@@ -24,9 +25,9 @@ export const AppRouter = () => {
 
           <Route path="*" element={ <HomeScreen /> }/>
           
-
-            
         </Routes>
+        </div>
+            
       </div>
     </Router>
   );

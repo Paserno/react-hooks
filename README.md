@@ -1906,3 +1906,72 @@ export const HomeScreen = () => {
 ````
 De esta forma podemos recibir las propiedades de un __Context__.
 #
+### 5.- useContext
+En punto anterior se mostro que se podia mandar una propiedad especificamente un objeto y que se podia mostrar en otro componente, esta vez mandaremos un __useState__, donde se mandará el estado y ademas que se pueda modificar el estado en otro componente:
+
+Pasos a seguir
+* Crear un useState en __MainApp__, que se mostrará y modificará en otros componentes.
+* Agregamos un `<pre>` en los 3 componentes __HomeScreen__, __AboutScreen__ y __LoginScreen__, para mostrar el estado y uno de ellos podra agregar un nuevo estado y otro quitarlo.
+
+En `components/09-useContext/MainApp.js`
+* Agregamos el estado en el componente __MainApp__.
+````
+const [user, setUser] = useState({});
+````
+* Finalmente lo mandamos como un objeto en el `value`.
+````
+  return (
+    <UserContext.Provider value={ {
+      user,
+      setUser
+    }}>
+    ...
+  )
+````
+En `components/09-useContext/LoginScreen.js` 
+* En los 3 componentes importamoes el __useContext__ y __UserContext__ para recibir el context.
+````
+import React, { useContext } from 'react';
+import { UserContext } from './UserContext';
+````
+* En los 3 componentes recibimos el useContext, desestructurando el `user` y `setUser`.
+* Pero en este componente solamente agregamos el nuevo usuario para agregarlo al __useState__ que se esta pasando por el __useContext__.
+````
+const { user, setUser } = useContext(UserContext);
+
+  const userNew = {
+    id: 1234,
+    name: 'Felipe'
+  }
+````
+* En los 3 componentes agregamos el `<pre>` con su `JSON.stringify`.
+* Solo en este componente agregamos el botón para agregar el nuevo objeto en el __useState__, gracias al __useContext__.
+````
+<pre>
+    {JSON.stringify(user, null, 3)}
+</pre>
+<button
+    className='btn btn-danger'
+    onClick={ handleClick }
+>
+    Logout
+</button>
+````
+En `components/09-useContext/AboutScreen.js`
+* Agregamos la funcion al componente para vacíar el estado.
+````
+const handleClick = () => {
+    setUser({});
+  }
+````
+* Despues del `<pre>` agregamos este nuevo botón, lo que hará es vaciar el __useState__ que viene del componente __MainApp__.
+````
+<button
+    className='btn btn-danger'
+    onClick={ handleClick }
+>
+    Logout
+</button>
+````
+Finalmente así se logra utilizar el __Context__ y su manipulación entre diferentes componentes.
+#

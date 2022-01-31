@@ -1793,3 +1793,58 @@ export const MainApp = () => {
 };
 ````
 #
+### 3.- Link y NavLin - React Router
+Se creará un navBar para mostrar en la aplicación y usar unos elementos de __React Router__:
+
+Pasos a Seguir
+* Crear el componente __NavBar__ en `components/09-useContext/NavBar.js`.
+* Implementarlo en __AppRouter__.
+
+En `components/09-useContext/NavBar.js`
+* Importamos los React y los elementos que utilizaremos de React Router.
+* Creamos el componente __NavBar__
+````
+import React from 'react';
+import { Link, NavLink } from 'react-router-dom';
+
+export const NavBar = () => {...}
+````
+* Extraemos un __NavBar__ de boostrap con sus clases y lo adaptamos.
+* Remplazando los `<a>` por `<Link>`, para luego darnos cuenta que estan los `<NavLink>` que este elemento identifica en que __url__ estas parado para iluminarse, asi usamos una clase especial `active`.
+````
+return (
+    <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
+        <div className="container-fluid">
+            <Link to="/" className="navbar-brand">useContext</Link>
+            
+            <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div className="navbar-nav">
+                    <NavLink activeClassName="active" to="/" className="nav-link" aria-current="page" >Home</NavLink>
+                    <NavLink activeClassName="active" to="/about" className="nav-link" >About</NavLink>
+                    <NavLink activeClassName="active" to="/login" className="nav-link" >Login</NavLink>
+                </div>
+            </div>
+        </div>
+    </nav>
+    )
+
+````
+En ``
+* Agregamos al inicio el componente __NavBar__, para mostrarlo siempre
+````
+<Router>
+    <div>
+
+        <NavBar />
+        ...
+    </div>
+</Router>    
+````
+* Finalmente agregamos un redireccionamiento en el caso de tener una page 404, pero en este caso agregamos el Home.
+````
+<Routes>
+    ...
+    <Route path="*" element={ <HomeScreen /> }/>
+</Routes>
+````
+#

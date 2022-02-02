@@ -25,6 +25,8 @@ npm start
 ````
 <br>
 
+> __Elemento Posterior 👀:__ __[HeroesApp - React](https://github.com/Paserno/react-router-hero-app)__
+
 #
 ### 1.- UseState - Multiples Estados
 Se creo un archivo Counter App, para probar el __Hook useState__.
